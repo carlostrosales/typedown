@@ -8,10 +8,15 @@ type Block = {
 
 export const BlockEditor = () => {
   const [blocksArray, setBlocksArray] = useState<string[]>(['']);
-  const refs = useRef<{ [key: string]: HTMLInputElement }>({});
-  const [focusId, setFocusId] = useState<string | null>(null);
+  const refs = useRef<{ [key: number]: HTMLInputElement | null }>({});
+  const [focusIndex, setFocusIndex] = useState<number>();
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    setFocusIndex(blocksArray.length - 1);
+    if (focusIndex != undefined) {
+      refs.current[focusIndex]?.focus();
+    }
+  }, [focusIndex, blocksArray]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key == 'Enter') {
@@ -32,6 +37,9 @@ export const BlockEditor = () => {
           value={element}
           onChange={(e) => handleOnChange(e, index)}
           onKeyDown={handleKeyDown}
+          ref={(el) => {
+            refs.current[index] = el;
+          }}
         ></input>
       ))}
     </div>
