@@ -7,43 +7,56 @@ type Block = {
 };
 
 export const BlockEditor = () => {
-  const [blocksArray, setBlocksArray] = useState<string[]>(['']);
-  const refs = useRef<{ [key: number]: HTMLInputElement | null }>({});
-  const [focusIndex, setFocusIndex] = useState<number>(0);
+  const [blocksArray, setBlocksArray] = useState<Block[]>([
+    { id: crypto.randomUUID(), content: '', type: 'paragraph' },
+  ]);
+  const refs = useRef<{ [key: string]: HTMLInputElement | null }>({});
+  const [focusId, setFocusId] = useState<string | null>(null);
 
   useEffect(() => {
-    setFocusIndex(blocksArray.length - 1);
-    if (focusIndex != undefined) {
-      refs.current[focusIndex]?.focus();
+    if (focusId != undefined) {
+      refs.current[focusId]?.focus();
     }
-  }, [focusIndex, blocksArray]);
+  }, [focusId, blocksArray]);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (index: string) => (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key == 'Enter') {
-      const newArray: string[] = [...blocksArray, ''];
-      setBlocksArray(newArray);
+      const newBlock: Block = {
+        id: crypto.randomUUID(),
+        content: '',
+        type: 'paragraph',
+      };
+      const newArrayWithNewBlock: Block[] = [...blocksArray, newBlock];
+      setBlocksArray(newArrayWithNewBlock);
+      setFocusId(newBlock.id);
     } else if (e.key == 'Delete' || e.key == 'Backspace') {
-      if (blocksArray[focusIndex] == '' && focusIndex != 0) {
-        const newArray = blocksArray.filter((_, i) => i != focusIndex);
+      const idx = blocksArray.findIndex((b) => b.id === index);
+      if (blocksArray[idx].content == '' && idx != 0) {
+        const newArray = blocksArray.filter((_, i) => i != idx);
         setBlocksArray(newArray);
+        setFocusId(blocksArray[idx - 1].id);
       }
     }
   };
 
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    setBlocksArray((prev) => prev.map((block, i) => (index == i ? e.target.value : block)));
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>, index: string) => {
+    setBlocksArray((prev) =>
+      prev.map((block) => (index == block.id ? { ...block, content: e.target.value } : block)),
+    );
   };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', maxWidth: '50%' }}>
-      {blocksArray.map((element, index) => (
+      {blocksArray.map((block) => (
         <input
-          key={index}
-          value={element}
-          onChange={(e) => handleOnChange(e, index)}
-          onKeyDown={handleKeyDown}
+          placeholder="Start typing..."
+          key={block.id}
+          value={block.content}
+          onChange={(e) => handleOnChange(e, block.id)}
+          onKeyDown={handleKeyDown(block.id)}
+          onFocus={() => setFocusId(block.id)}
           ref={(el) => {
-            refs.current[index] = el;
+            refs.current[block.id] = el;
           }}
           style={{ border: 'none', outline: 'none' }}
         ></input>
