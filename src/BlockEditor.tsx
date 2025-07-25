@@ -7,26 +7,28 @@ type Block = {
 }
 
 export const BlockEditor = () => {
-
-    const [ blocksArray, setBlocksArray ] = useState<string[]>([]);
     const [ value, setValue ] = useState("");
+    const [ blocksArray, setBlocksArray ] = useState<string[]>([value]);
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key == "Enter") {
-            console.log("Enter key was pressed.");
-            const arr: string[] = [value];
-            setBlocksArray(arr);
+            const newArray: string[] = [...blocksArray, value];
+            setBlocksArray(newArray);
         }
-    }
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setValue(e.target.value);
+    };
 
     return (
         <div>
-            <input value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={handleKeyDown} />
             {
                 blocksArray.map((element, index) => (
-                    <span key={index}>{element}</span>
+                    <input key={index} value={value} onChange={handleChange} onKeyDown={handleKeyDown} ></input>
                 ))
             }
+
         </div>
     )
 };
