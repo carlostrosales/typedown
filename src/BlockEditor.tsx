@@ -35,7 +35,7 @@ export const BlockEditor = () => {
   };
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', maxWidth: '50%' }}>
       {blocksArray.map((element, index) => (
         <input
           key={index}
@@ -45,6 +45,7 @@ export const BlockEditor = () => {
           ref={(el) => {
             refs.current[index] = el;
           }}
+          style={{ border: 'none', outline: 'none' }}
         ></input>
       ))}
     </div>
