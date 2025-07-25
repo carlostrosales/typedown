@@ -9,7 +9,7 @@ type Block = {
 export const BlockEditor = () => {
   const [blocksArray, setBlocksArray] = useState<string[]>(['']);
   const refs = useRef<{ [key: number]: HTMLInputElement | null }>({});
-  const [focusIndex, setFocusIndex] = useState<number>();
+  const [focusIndex, setFocusIndex] = useState<number>(0);
 
   useEffect(() => {
     setFocusIndex(blocksArray.length - 1);
@@ -18,10 +18,15 @@ export const BlockEditor = () => {
     }
   }, [focusIndex, blocksArray]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key == 'Enter') {
       const newArray: string[] = [...blocksArray, ''];
       setBlocksArray(newArray);
+    } else if (e.key == 'Delete' || e.key == 'Backspace') {
+      if (blocksArray[focusIndex] == '' && focusIndex != 0) {
+        const newArray = blocksArray.filter((_, i) => i != focusIndex);
+        setBlocksArray(newArray);
+      }
     }
   };
 
