@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 type Block = {
     id: string;
@@ -7,25 +7,28 @@ type Block = {
 }
 
 export const BlockEditor = () => {
-    const [ value, setValue ] = useState("");
-    const [ blocksArray, setBlocksArray ] = useState<string[]>([value]);
+    const [ blocksArray, setBlocksArray ] = useState<string[]>([""]);
+    const nextInputRef = useRef<HTMLInputElement>(null);
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key == "Enter") {
-            const newArray: string[] = [...blocksArray, value];
+            const newArray: string[] = [...blocksArray, ""];
             setBlocksArray(newArray);
+            nextInputRef.current?.focus();
         }
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setValue(e.target.value);
-    };
+    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        setBlocksArray(prev => 
+            prev.map((block, i) => index == i ? e.target.value : block)
+        );
+    }
 
     return (
         <div>
             {
                 blocksArray.map((element, index) => (
-                    <input key={index} value={value} onChange={handleChange} onKeyDown={handleKeyDown} ></input>
+                    <input key={index} value={element} onChange={(e) => handleOnChange(e, index)} onKeyDown={handleKeyDown} ></input>
                 ))
             }
 
