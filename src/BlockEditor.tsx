@@ -15,7 +15,7 @@ export const BlockEditor = ({ blocksArray, onBlocksChange }: BlockEditorProps) =
   const refs = useRef<{ [key: string]: HTMLInputElement | null }>({});
   const [focusId, setFocusId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
+  const [modalBlockId, setModalBlockId] = useState<string | null>(null);
 
   useEffect(() => {
     if (focusId != undefined) {
@@ -34,19 +34,25 @@ export const BlockEditor = ({ blocksArray, onBlocksChange }: BlockEditorProps) =
       onBlocksChange(newArrayWithNewBlock);
       setFocusId(newBlock.id);
     } else if (e.key == 'Delete' || e.key == 'Backspace') {
+      console.log('Backspace/Delete pressed on block:', index);
+
       const idx = blocksArray.findIndex((b) => b.id === index);
+      const currentBlock = blocksArray[idx];
+
+      console.log('==================');
+      if (currentBlock.content.endsWith('/') && modalBlockId == index) {
+        setShowModal(false);
+        setModalBlockId(null);
+        console.log('This line was hit.');
+      }
       if (blocksArray[idx].content == '' && idx != 0) {
         const newArray = blocksArray.filter((_, i) => i != idx);
         onBlocksChange(newArray);
         setFocusId(blocksArray[idx - 1].id);
       }
     } else if (e.key == '/') {
-      const rect = e.currentTarget.getBoundingClientRect();
-      setModalPosition({
-        x: rect.left,
-        y: rect.bottom + 5,
-      });
       setShowModal(true);
+      setModalBlockId(index);
     }
   };
 
@@ -85,8 +91,6 @@ export const BlockEditor = ({ blocksArray, onBlocksChange }: BlockEditorProps) =
           <div
             style={{
               backgroundColor: '#f5f5f5',
-              left: modalPosition.x,
-              top: modalPosition.y,
               padding: '1rem',
               borderRadius: '0.5rem',
               minWidth: '10rem',
