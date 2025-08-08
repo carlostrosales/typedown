@@ -6,12 +6,16 @@ type Block = {
   type: 'paragraph' | 'prompt' | 'response';
 };
 
-export const BlockEditor = () => {
-  const [blocksArray, setBlocksArray] = useState<Block[]>([
-    { id: crypto.randomUUID(), content: '', type: 'paragraph' },
-  ]);
+interface BlockEditorProps {
+  blocksArray: Block[];
+  onBlocksChange: (blocks: Block[] | ((prev: Block[]) => Block[])) => void;
+}
+
+export const BlockEditor = ({ blocksArray, onBlocksChange }: BlockEditorProps) => {
   const refs = useRef<{ [key: string]: HTMLInputElement | null }>({});
   const [focusId, setFocusId] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     if (focusId != undefined) {
@@ -27,20 +31,27 @@ export const BlockEditor = () => {
         type: 'paragraph',
       };
       const newArrayWithNewBlock: Block[] = [...blocksArray, newBlock];
-      setBlocksArray(newArrayWithNewBlock);
+      onBlocksChange(newArrayWithNewBlock);
       setFocusId(newBlock.id);
     } else if (e.key == 'Delete' || e.key == 'Backspace') {
       const idx = blocksArray.findIndex((b) => b.id === index);
       if (blocksArray[idx].content == '' && idx != 0) {
         const newArray = blocksArray.filter((_, i) => i != idx);
-        setBlocksArray(newArray);
+        onBlocksChange(newArray);
         setFocusId(blocksArray[idx - 1].id);
       }
+    } else if (e.key == '/') {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setModalPosition({
+        x: rect.left,
+        y: rect.bottom + 5,
+      });
+      setShowModal(true);
     }
   };
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>, index: string) => {
-    setBlocksArray((prev) =>
+    onBlocksChange((prev) =>
       prev.map((block) => (index == block.id ? { ...block, content: e.target.value } : block)),
     );
   };
@@ -61,6 +72,34 @@ export const BlockEditor = () => {
           style={{ border: 'none', outline: 'none' }}
         ></input>
       ))}
+      {showModal && (
+        <div
+          style={{
+            display: 'center',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1000,
+            width: '15rem',
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: '#f5f5f5',
+              left: modalPosition.x,
+              top: modalPosition.y,
+              padding: '1rem',
+              borderRadius: '0.5rem',
+              minWidth: '10rem',
+              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2), 0 4px 10px rgba(0, 0, 0, 0.1)',
+              border: '1px solid rgba(0, 0, 0, 0.1)',
+              transform: 'translateX(4rem) translateY(0px)',
+            }}
+          >
+            <h3>Command</h3>
+            <button onClick={() => setShowModal(false)}>Ask</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
