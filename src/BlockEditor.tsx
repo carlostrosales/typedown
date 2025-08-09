@@ -97,10 +97,92 @@ export const BlockEditor = ({ blocksArray, onBlocksChange }: BlockEditorProps) =
               boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2), 0 4px 10px rgba(0, 0, 0, 0.1)',
               border: '1px solid rgba(0, 0, 0, 0.1)',
               transform: 'translateX(4rem) translateY(0px)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.5rem',
             }}
           >
-            <h3>Command</h3>
-            <button onClick={() => setShowModal(false)}>Ask</button>
+            <h6 style={{ marginTop: '0', textAlign: 'left' }}>Suggested</h6>
+            <button
+              style={{
+                border: 'none',
+                backgroundColor: '#f5f5f5',
+                textAlign: 'left',
+                padding: '0.5rem',
+                borderRadius: '0.5rem',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s',
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
+              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
+              onClick={() => setShowModal(false)}
+            >
+              Ask
+            </button>
+            <button
+              style={{
+                border: 'none',
+                backgroundColor: '#f5f5f5',
+                textAlign: 'left',
+                padding: '0.5rem',
+                borderRadius: '0.5rem',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s',
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
+              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
+              onClick={() => setShowModal(false)}
+            >
+              Summarize
+            </button>
+            <button
+              style={{
+                border: 'none',
+                backgroundColor: '#f5f5f5',
+                textAlign: 'left',
+                padding: '0.5rem',
+                borderRadius: '0.5rem',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s',
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
+              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
+              onClick={() => setShowModal(false)}
+            >
+              Rewrite
+            </button>
+            <button
+              style={{
+                border: 'none',
+                backgroundColor: '#f5f5f5',
+                textAlign: 'left',
+                padding: '0.5rem',
+                borderRadius: '0.5rem',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s',
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
+              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
+              onClick={() => setShowModal(false)}
+            >
+              Search
+            </button>
+            <button
+              style={{
+                border: 'none',
+                backgroundColor: '#f5f5f5',
+                textAlign: 'left',
+                padding: '0.5rem',
+                borderRadius: '0.5rem',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s',
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
+              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
+              onClick={() => setShowModal(false)}
+            >
+              Insert
+            </button>
           </div>
         </div>
       )}
