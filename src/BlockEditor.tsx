@@ -14,8 +14,9 @@ interface BlockEditorProps {
 export const BlockEditor = ({ blocksArray, onBlocksChange }: BlockEditorProps) => {
   const refs = useRef<{ [key: string]: HTMLInputElement | null }>({});
   const [focusId, setFocusId] = useState<string | null>(null);
-  const [showModal, setShowModal] = useState(false);
+  const [showCommandModal, setShowCommandModal] = useState(false);
   const [modalBlockId, setModalBlockId] = useState<string | null>(null);
+  const [showAskModal, setShowAskModal] = useState(false);
 
   useEffect(() => {
     if (focusId != undefined) {
@@ -41,7 +42,7 @@ export const BlockEditor = ({ blocksArray, onBlocksChange }: BlockEditorProps) =
 
       console.log('==================');
       if (currentBlock.content.endsWith('/') && modalBlockId == index) {
-        setShowModal(false);
+        setShowCommandModal(false);
         setModalBlockId(null);
         console.log('This line was hit.');
       }
@@ -51,7 +52,7 @@ export const BlockEditor = ({ blocksArray, onBlocksChange }: BlockEditorProps) =
         setFocusId(blocksArray[idx - 1].id);
       }
     } else if (e.key == '/') {
-      setShowModal(true);
+      setShowCommandModal(true);
       setModalBlockId(index);
     }
   };
@@ -78,7 +79,7 @@ export const BlockEditor = ({ blocksArray, onBlocksChange }: BlockEditorProps) =
           style={{ border: 'none', outline: 'none' }}
         ></input>
       ))}
-      {showModal && (
+      {showCommandModal && (
         <div
           style={{
             display: 'center',
@@ -115,7 +116,10 @@ export const BlockEditor = ({ blocksArray, onBlocksChange }: BlockEditorProps) =
               }}
               onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
               onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
-              onClick={() => setShowModal(false)}
+              onClick={() => {
+                setShowCommandModal(false);
+                setShowAskModal(true);
+              }}
             >
               Ask
             </button>
@@ -131,7 +135,7 @@ export const BlockEditor = ({ blocksArray, onBlocksChange }: BlockEditorProps) =
               }}
               onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
               onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
-              onClick={() => setShowModal(false)}
+              onClick={() => setShowCommandModal(false)}
             >
               Summarize
             </button>
@@ -147,7 +151,7 @@ export const BlockEditor = ({ blocksArray, onBlocksChange }: BlockEditorProps) =
               }}
               onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
               onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
-              onClick={() => setShowModal(false)}
+              onClick={() => setShowCommandModal(false)}
             >
               Rewrite
             </button>
@@ -163,7 +167,7 @@ export const BlockEditor = ({ blocksArray, onBlocksChange }: BlockEditorProps) =
               }}
               onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
               onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
-              onClick={() => setShowModal(false)}
+              onClick={() => setShowCommandModal(false)}
             >
               Search
             </button>
@@ -179,12 +183,25 @@ export const BlockEditor = ({ blocksArray, onBlocksChange }: BlockEditorProps) =
               }}
               onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
               onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
-              onClick={() => setShowModal(false)}
+              onClick={() => setShowCommandModal(false)}
             >
               Insert
             </button>
           </div>
         </div>
+      )}
+
+      {showAskModal && (
+        <form
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem',
+          }}
+        >
+          <input placeholder="Ask..." />
+          <button type="submit"></button>
+        </form>
       )}
     </div>
   );
